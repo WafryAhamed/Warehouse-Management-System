@@ -1,0 +1,161 @@
+/*
+   ENTERPRISE Inventory Management System
+   Professional CSS Styling
+*/
+
+/* Root styling */
+* {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Main window */
+.root {
+    -fx-background-color: #ecf0f1;
+    -fx-font-size: 11;
+}
+
+/* Text Fields */
+.text-field {
+    -fx-font-size: 11;
+    -fx-padding: 8;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-text-fill: #2c3e50;
+}
+
+.text-field:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+}
+
+/* Password Fields */
+.password-field {
+    -fx-font-size: 11;
+    -fx-padding: 8;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.password-field:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+}
+
+/* Buttons */
+.button {
+    -fx-font-size: 11;
+    -fx-padding: 8 16;
+    -fx-border-radius: 3;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.button:default {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+}
+
+.button:default:hover {
+    -fx-background-color: #229954;
+}
+
+.button:default:pressed {
+    -fx-background-color: #1e8449;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+}
+
+/* Table View */
+.table-view {
+    -fx-font-size: 11;
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+}
+
+.table-view .column-header {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-padding: 8;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell {
+    -fx-padding: 5;
+    -fx-border-color: #ecf0f1;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #d5dbdb;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #2c3e50;
+}
+
+.label-title {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    -fx-progress-color: #3498db;
+}
+
+/* Alert Dialogs */
+.dialog-pane {
+    -fx-font-size: 11;
+    -fx-background-color: #ecf0f1;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #34495e;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Status Bar */
+.status-bar {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10;
+}
+
+/* VBox and HBox */
+.vbox, .hbox {
+    -fx-spacing: 10;
+}
+
+/* Menu Bar */
+.menu-bar {
+    -fx-background-color: #34495e;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: white;
+}
+
+/* Color scheme */
+/* Primary: #3498db (Blue) */
+/* Secondary: #34495e (Dark Blue) */
+/* Success: #27ae60 (Green) */
+/* Danger: #e74c3c (Red) */
+/* Warning: #f39c12 (Orange) */
+/* Light: #ecf0f1 (Light Gray) */
+/* Dark: #2c3e50 (Dark Gray) */
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.orbytex.orbytex1.controller.OrderManagementController"
+            style="-fx-background-color: #F5F6F8;">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox spacing="20" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #E5E7EB; -fx-border-width: 0 0 1 0;">
+            <HBox.hgrow><Priority priority="ALWAYS"/></HBox.hgrow>
+            <Label text="📦 Order Management" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #FF4D1A;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="userNameLabel" text="User" style="-fx-font-size: 12; -fx-text-fill: #6B7280;"/>
+            <Button text="Logout" onAction="#handleLogout" style="-fx-padding: 8 15; -fx-font-size: 12;"/>
+        </HBox>
+    </top>
+
+    <!-- Content -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+            <HBox spacing="10">
+                <Button fx:id="createOrderButton" text="Create Order" onAction="#handleCreateOrder"
+                        style="-fx-padding: 10 20; -fx-font-size: 12; -fx-text-fill: white; -fx-background-color: #FF4D1A;"/>
+                <Button fx:id="viewDetailsButton" text="View Details" onAction="#handleViewDetails"
+                        style="-fx-padding: 10 20; -fx-font-size: 12;"/>
+            </HBox>
+
+            <TableView fx:id="ordersTable" style="-fx-background-color: white; -fx-padding: 10;">
+                <columns>
+                    <TableColumn text="Order #" prefWidth="100"/>
+                    <TableColumn text="Customer" prefWidth="150"/>
+                    <TableColumn text="Amount" prefWidth="100"/>
+                    <TableColumn text="Status" prefWidth="100"/>
+                    <TableColumn text="Date" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
+

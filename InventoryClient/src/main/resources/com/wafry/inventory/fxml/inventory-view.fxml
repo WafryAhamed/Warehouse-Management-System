@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+  Inventory Management View
+  Main UI for the Inventory Desktop Application
+  Uses modern layout with BorderPane and proper spacing
+-->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.wafry.inventory.controller.InventoryController"
+            style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11;">
+
+    <!-- TOP: Header with title -->
+    <top>
+        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="📦 Inventory Management System"
+                   style="-fx-font-size: 24; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Label text="Manage your product inventory with ease"
+                   style="-fx-font-size: 12; -fx-text-fill: #ecf0f1; -fx-padding: 5 0 0 0;"/>
+        </VBox>
+    </top>
+
+    <!-- CENTER: Main content area with toolbar and table -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+
+            <!-- Search and Control Buttons -->
+            <HBox spacing="10" style="-fx-padding: 0 0 10 0;">
+                <!-- Search field -->
+                <TextField fx:id="searchField"
+                          promptText="🔍 Search by name or category..."
+                          style="-fx-font-size: 11; -fx-padding: 8;">
+                    <HBox.hgrow>
+                        <Priority fx:constant="ALWAYS"/>
+                    </HBox.hgrow>
+                </TextField>
+
+                <!-- Control buttons -->
+                <Button fx:id="refreshButton"
+                       text="🔄 Refresh"
+                       onAction="#onRefreshButtonClick"
+                       style="-fx-font-size: 11; -fx-padding: 8 16;"/>
+
+                <Button fx:id="addButton"
+                       text="➕ Add"
+                       onAction="#onAddButtonClick"
+                       style="-fx-font-size: 11; -fx-padding: 8 16; -fx-text-fill: white; -fx-background-color: #27ae60;"/>
+
+                <Button fx:id="editButton"
+                       text="✏️ Edit"
+                       onAction="#onEditButtonClick"
+                       style="-fx-font-size: 11; -fx-padding: 8 16; -fx-text-fill: white; -fx-background-color: #3498db;"/>
+
+                <Button fx:id="deleteButton"
+                       text="🗑️ Delete"
+                       onAction="#onDeleteButtonClick"
+                       style="-fx-font-size: 11; -fx-padding: 8 16; -fx-text-fill: white; -fx-background-color: #e74c3c;"/>
+            </HBox>
+
+            <!-- Product Table -->
+            <VBox style="-fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-border-width: 1;">
+                <TableView fx:id="productTable"
+                          style="-fx-font-size: 11;"
+                          VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn"
+                                    text="ID"
+                                    prefWidth="60"
+                                    resizable="false"/>
+                        <TableColumn fx:id="nameColumn"
+                                    text="Product Name"
+                                    prefWidth="250"/>
+                        <TableColumn fx:id="priceColumn"
+                                    text="Price ($)"
+                                    prefWidth="120"/>
+                        <TableColumn fx:id="quantityColumn"
+                                    text="Quantity"
+                                    prefWidth="120"/>
+                    </columns>
+                </TableView>
+
+                <!-- Loading indicator overlay -->
+                <ProgressIndicator fx:id="loadingIndicator"
+                                  visible="false"
+                                  managed="false"
+                                  style="-fx-padding: 20;"
+                                  progress="-1.0"/>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM: Status bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #ecf0f1; -fx-padding: 10; -fx-border-color: #bdc3c7; -fx-border-width: 1 0 0 0;">
+            <Label fx:id="statusLabel"
+                   text="Ready"
+                   style="-fx-font-size: 11; -fx-text-fill: #2c3e50;"/>
+            <HBox.hgrow>
+                <Priority fx:constant="ALWAYS"/>
+            </HBox.hgrow>
+            <Label text="Backend: http://localhost:8080/api/products"
+                   style="-fx-font-size: 10; -fx-text-fill: #7f8c8d;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
+
