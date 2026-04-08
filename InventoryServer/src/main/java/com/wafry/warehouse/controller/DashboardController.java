@@ -1,50 +1,26 @@
 package com.wafry.warehouse.controller;
 
 import com.wafry.warehouse.dto.DashboardStatsDTO;
-import com.wafry.warehouse.repository.*;
+import com.wafry.warehouse.service.DashboardService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/api/dashboard")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1/dashboard")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class DashboardController {
-
-    private final ProductRepository productRepository;
-    private final WarehouseRepository warehouseRepository;
-    private final StockRepository stockRepository;
-    private final StockMovementRepository movementRepository;
-
-    public DashboardController(ProductRepository productRepository, WarehouseRepository warehouseRepository,
-                             StockRepository stockRepository, StockMovementRepository movementRepository) {
-        this.productRepository = productRepository;
-        this.warehouseRepository = warehouseRepository;
-        this.stockRepository = stockRepository;
-        this.movementRepository = movementRepository;
-    }
+    private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
+    private DashboardService dashboardService;
 
     @GetMapping("/stats")
-    public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
-        try {
-            DashboardStatsDTO stats = new DashboardStatsDTO();
-            stats.setTotalProducts((int) productRepository.count());
-            stats.setTotalWarehouses((int) warehouseRepository.count());
-            stats.setTotalStock(stockRepository.findAll().stream()
-                    .mapToInt(s -> s.getQuantity() != null ? s.getQuantity() : 0)
-                    .sum());
-            stats.setTotalMovements(movementRepository.count());
-            stats.setUtilizationPercent(50.0);
-            stats.setLowStockCount(0);
-            stats.setTotalValue(0);
-
-            return ResponseEntity.ok(stats);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-
-    @GetMapping("/overview")
-    public ResponseEntity<?> getDashboardOverview() {
-        return ResponseEntity.ok("Dashboard overview");
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER')")
+    public ResponseEntity<DashboardStatsDTO> getSystemStats() {
+        log.info("Fetching system dashboard stats");
+        DashboardStatsDTO stats = dashboardService.getSystemStats();
+        return ResponseEntity.ok(stats);
     }
 }
+

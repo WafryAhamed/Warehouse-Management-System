@@ -46,7 +46,7 @@ public class ProductService {
      * @return The product
      * @throws ApiException if API call fails
      */
-    public Product getProductById(Integer id) throws ApiException {
+    public Product getProductById(Long id) throws ApiException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Invalid product ID");
         }
@@ -75,7 +75,7 @@ public class ProductService {
      * @return The updated product
      * @throws ApiException if API call fails
      */
-    public Product updateProduct(Integer id, Product product) throws ApiException {
+    public Product updateProduct(Long id, Product product) throws ApiException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Invalid product ID");
         }
@@ -90,7 +90,7 @@ public class ProductService {
      * @param id Product ID
      * @throws ApiException if API call fails
      */
-    public void deleteProduct(Integer id) throws ApiException {
+    public void deleteProduct(Long id) throws ApiException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Invalid product ID");
         }

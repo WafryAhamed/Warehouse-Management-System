@@ -1,29 +1,20 @@
 package com.wafry.inventory.controller;
 
+import com.wafry.inventory.api.ApiClient;
+import com.wafry.inventory.model.AuthResponse;
+import com.wafry.inventory.util.SceneManager;
+import com.wafry.inventory.util.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import com.wafry.inventory.service.AuthService;
-import com.wafry.inventory.util.Logger;
-import com.wafry.inventory.util.SceneManager;
-import com.wafry.inventory.exception.AuthenticationException;
+import javafx.scene.input.KeyEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * LoginController - Handles user authentication
- *
- * Responsibilities:
- * - Validate user credentials
- * - Authenticate users
- * - Navigate to main application after successful login
- * - Display authentication errors
- *
- * @author Wafry Team
- */
 public class LoginController {
-    private static final Logger logger = Logger.getLogger(LoginController.class);
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @FXML
     private TextField usernameField;
@@ -32,158 +23,88 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private Label errorLabel;
-
-    @FXML
-    private Button loginButton;
-
-    private AuthService authService;
-
-    /**
-     * Initialize controller - called by JavaFX after FXML is loaded
-     */
-    @FXML
-    public void initialize() {
-        logger.info("Initializing LoginController");
-
-        authService = new AuthService();
-        errorLabel.setText("");
-
-        setupKeyboardListeners();
+    private void initialize() {
+        // Allow Enter key to submit login
+        passwordField.setOnKeyPressed(this::handleKeyPress);
     }
 
-    /**
-     * Setup keyboard event listeners for Enter key
-     */
-    private void setupKeyboardListeners() {
-        usernameField.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                onLoginButtonClick();
-            }
-        });
-
-        passwordField.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                onLoginButtonClick();
-            }
-        });
+    @FXML
+    private void handleKeyPress(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleLogin();
+        }
     }
 
-    /**
-     * Handle login button click
-     */
     @FXML
-    protected void onLoginButtonClick() {
-        clearErrors();
+    private void onLoginButtonClick() {
+        handleLogin();
+    }
 
-        String username = (usernameField != null && usernameField.getText() != null)
-                         ? usernameField.getText().trim() : "";
-        String password = (passwordField != null && passwordField.getText() != null)
-                         ? passwordField.getText().trim() : "";
+    @FXML
+    private void handleLogin() {
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
 
-        // Validate inputs
-        if (!validateInputs(username, password)) {
+        if (username.isEmpty() || password.isEmpty()) {
+            showError("Validation Error", "Please enter both username and password");
             return;
         }
 
-        // Attempt authentication
         try {
-            boolean loginSuccess = authService.authenticate(username, password);
+            log.info("Attempting login for user: {}", username);
+            AuthResponse response = ApiClient.login(username, password);
 
-            if (loginSuccess) {
-                logger.info("Login successful for user: " + username);
-                navigateToInventory();
-            }
+            if (response != null && response.getUser() != null) {
+                SessionManager.getInstance().setSession(response.getToken(), response.getUser());
+                log.info("Login successful for user: {}", username);
 
-        } catch (AuthenticationException e) {
-            logger.warn("Authentication failed: " + e.getMessage());
-            showError(e.getMessage());
-            if (passwordField != null) {
-                passwordField.clear();
+                // Navigate to dashboard
+                navigateToDashboard();
+            } else {
+                showError("Login Failed", "Invalid response from server");
             }
         } catch (Exception e) {
-            logger.error("Unexpected error during login", e);
-            showError("An unexpected error occurred. Please try again.");
+            log.error("Login error", e);
+            showError("Login Failed", "Invalid username or password");
         }
     }
 
-    /**
-     * Validate login form inputs
-     *
-     * @param username Username input
-     * @param password Password input
-     * @return true if inputs are valid
-     */
-    private boolean validateInputs(String username, String password) {
-        if (username.isEmpty()) {
-            showError("❌ Username is required");
-            usernameField.requestFocus();
-            return false;
-        }
+    private void navigateToDashboard() {
+        String role = SessionManager.getInstance().getUserRole();
+        SceneManager sceneManager = SceneManager.getInstance();
 
-        if (password.isEmpty()) {
-            showError("❌ Password is required");
-            passwordField.requestFocus();
-            return false;
-        }
-
-        if (username.length() < 3) {
-            showError("❌ Username must be at least 3 characters");
-            usernameField.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Navigate to inventory view after successful login
-     */
-    private void navigateToInventory() {
-        try {
-            logger.info("=== NAVIGATION STARTED ===");
-            logger.info("Attempting to load inventory-view.fxml");
-            
-            // Debug info
-            logger.info("ClassLoader: " + this.getClass().getClassLoader());
-            var testUrl = this.getClass().getResource("/com/wafry/inventory/fxml/inventory-view.fxml");
-            logger.info("Resource test result: " + (testUrl != null ? "FOUND: " + testUrl : "NOT FOUND"));
-            
-            SceneManager.loadScene("inventory-view.fxml");
-            logger.info("Successfully navigated to inventory view");
-            logger.info("=== NAVIGATION COMPLETED ===");
-        } catch (Exception e) {
-            logger.error("=== NAVIGATION FAILED ===");
-            logger.error("Exception type: " + e.getClass().getName());
-            logger.error("Exception message: " + e.getMessage());
-            logger.error("Full stack trace:", e);
-            
-            String errorMsg = e.getClass().getSimpleName() + ": " + e.getMessage();
-            if (e.getCause() != null) {
-                errorMsg += " -> Cause: " + e.getCause().getMessage();
-            }
-            showError(errorMsg);
+        switch (role) {
+            case "SUPER_ADMIN":
+            case "ADMIN":
+                sceneManager.loadScene("admin-dashboard.fxml", "Inventory - Admin Dashboard");
+                break;
+            case "MANAGER":
+                sceneManager.loadScene("manager-dashboard.fxml", "Inventory - Manager Dashboard");
+                break;
+            case "CASHIER":
+                sceneManager.loadScene("pos-dashboard.fxml", "Inventory - POS");
+                break;
+            case "INVENTORY_MANAGER":
+                sceneManager.loadScene("inventory-dashboard.fxml", "Inventory - Inventory");
+                break;
+            default:
+                sceneManager.loadScene("user-dashboard.fxml", "Inventory - Dashboard");
         }
     }
 
-    /**
-     * Display error message
-     */
-    private void showError(String message) {
-        if (errorLabel != null) {
-            errorLabel.setText(message);
-            errorLabel.setStyle("-fx-text-fill: #d32f2f;");
-        }
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    /**
-     * Clear error message
-     */
-    private void clearErrors() {
-        if (errorLabel != null) {
-            errorLabel.setText("");
-        }
+    @FXML
+    private void handleDemoLogin() {
+        usernameField.setText("admin");
+        passwordField.setText("password");
+        handleLogin();
     }
 }
-
 

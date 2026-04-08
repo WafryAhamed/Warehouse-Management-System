@@ -63,7 +63,7 @@ public class JsonUtil {
             Product product = new Product();
 
             Integer id = extractIntValue(jsonString, "id");
-            if (id != null) product.setId(id);
+            if (id != null) product.setId(Long.valueOf(id));
 
             String name = extractStringValue(jsonString, "name");
             if (name != null) product.setName(name);

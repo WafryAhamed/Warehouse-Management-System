@@ -2,41 +2,42 @@ package com.wafry.inventory.model;
 
 import java.time.LocalDateTime;
 
-/**
- * User - Entity class representing a system user
- *
- * Properties:
- * - Authentication (username, email)
- * - Profile (full name, role)
- * - Status tracking
- *
- * @author Wafry Team
- */
 public class User {
-    private Integer id;
+    private Long id;
     private String username;
     private String email;
-    private String fullName;
-    private String role; // ADMIN, MANAGER, STAFF
-    private String status; // ACTIVE, INACTIVE
-    private Integer branchId;
-    private LocalDateTime createdAt;
+    private String firstName;
+    private String lastName;
+    private String roleName;
+    private Boolean isActive;
     private LocalDateTime lastLogin;
+    private LocalDateTime createdAt;
 
-    // Constructors
     public User() {}
 
-    public User(String username, String email, String fullName, String role) {
+    public User(Long id, String username, String email, String firstName, String lastName, String roleName, Boolean isActive, LocalDateTime lastLogin, LocalDateTime createdAt) {
+        this.id = id;
         this.username = username;
         this.email = email;
-        this.fullName = fullName;
-        this.role = role;
-        this.status = "ACTIVE";
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.roleName = roleName;
+        this.isActive = isActive;
+        this.lastLogin = lastLogin;
+        this.createdAt = createdAt;
     }
 
-    // Getters & Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    // Lightweight constructor for creation
+    public User(String username, String email, String firstName, String lastName) {
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isActive = true;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -44,45 +45,25 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getRoleName() { return roleName; }
+    public void setRoleName(String roleName) { this.roleName = roleName; }
 
-    public Integer getBranchId() { return branchId; }
-    public void setBranchId(Integer branchId) { this.branchId = branchId; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 
     public LocalDateTime getLastLogin() { return lastLogin; }
     public void setLastLogin(LocalDateTime lastLogin) { this.lastLogin = lastLogin; }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", role='" + role + '\'' +
-                '}';
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id != null && id.equals(user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+    public String getFullName() {
+        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
     }
 }
-

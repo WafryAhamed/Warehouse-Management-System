@@ -74,7 +74,7 @@ public class SupplierService {
      */
     public Supplier createSupplier(Supplier supplier) throws ApiException {
         validateSupplier(supplier);
-        logger.info("Creating new supplier: " + supplier.getName());
+        logger.info("Creating new supplier: " + supplier.getSupplierName());
 
         try {
             // TODO: Implement API call to POST /api/suppliers
@@ -139,7 +139,7 @@ public class SupplierService {
         logger.info("Retrieving active suppliers");
         try {
             return getAllSuppliers().stream()
-                    .filter(s -> "ACTIVE".equalsIgnoreCase(s.getStatus()))
+                    .filter(s -> Boolean.TRUE.equals(s.getIsActive()))
                     .toList();
         } catch (Exception e) {
             logger.error("Error retrieving active suppliers", e);
@@ -164,7 +164,7 @@ public class SupplierService {
 
         try {
             return getAllSuppliers().stream()
-                    .filter(s -> s.getName().toLowerCase().contains(searchTerm) ||
+                    .filter(s -> s.getSupplierName().toLowerCase().contains(searchTerm) ||
                                (s.getEmail() != null && s.getEmail().toLowerCase().contains(searchTerm)) ||
                                (s.getContactPerson() != null && s.getContactPerson().toLowerCase().contains(searchTerm)))
                     .toList();
@@ -184,7 +184,7 @@ public class SupplierService {
         if (supplier == null) {
             throw new IllegalArgumentException("Supplier cannot be null");
         }
-        if (supplier.getName() == null || supplier.getName().isEmpty()) {
+        if (supplier.getSupplierName() == null || supplier.getSupplierName().isEmpty()) {
             throw new IllegalArgumentException("Supplier name is required");
         }
         if (supplier.getEmail() == null || supplier.getEmail().isEmpty()) {

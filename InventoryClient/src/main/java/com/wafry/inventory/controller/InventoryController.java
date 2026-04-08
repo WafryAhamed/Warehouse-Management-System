@@ -25,6 +25,7 @@ import java.util.List;
  * @author Wafry Team
  */
 public class InventoryController {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InventoryController.class);
     private static final Logger logger = Logger.getLogger(InventoryController.class);
 
     @FXML
@@ -96,7 +97,7 @@ public class InventoryController {
      */
     private void configureTableColumns() {
         idColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId().intValue()).asObject());
 
         nameColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
@@ -238,13 +239,38 @@ public class InventoryController {
      */
     private void loadDemoProducts() {
         logger.info("Loading demo products");
-        allProducts.setAll(
-            new Product(1, "Demo Laptop", 999.99, 5),
-            new Product(2, "Demo Mouse", 29.99, 50),
-            new Product(3, "Demo Keyboard", 79.99, 25),
-            new Product(4, "Demo Monitor", 299.99, 10),
-            new Product(5, "Demo USB Cable", 9.99, 100)
-        );
+        // Create demo products using setters since constructor requires all 18 parameters
+        Product p1 = new Product();
+        p1.setId(1L);
+        p1.setName("Demo Laptop");
+        p1.setSellingPrice(new java.math.BigDecimal("999.99"));
+        p1.setQuantityOnHand(5);
+
+        Product p2 = new Product();
+        p2.setId(2L);
+        p2.setName("Demo Mouse");
+        p2.setSellingPrice(new java.math.BigDecimal("29.99"));
+        p2.setQuantityOnHand(50);
+
+        Product p3 = new Product();
+        p3.setId(3L);
+        p3.setName("Demo Keyboard");
+        p3.setSellingPrice(new java.math.BigDecimal("79.99"));
+        p3.setQuantityOnHand(25);
+
+        Product p4 = new Product();
+        p4.setId(4L);
+        p4.setName("Demo Monitor");
+        p4.setSellingPrice(new java.math.BigDecimal("299.99"));
+        p4.setQuantityOnHand(10);
+
+        Product p5 = new Product();
+        p5.setId(5L);
+        p5.setName("Demo USB Cable");
+        p5.setSellingPrice(new java.math.BigDecimal("9.99"));
+        p5.setQuantityOnHand(100);
+
+        allProducts.setAll(p1, p2, p3, p4, p5);
         filterProducts(searchField != null ? searchField.getText() : "");
         updateStatus("✓ " + allProducts.size() + " demo products loaded");
     }
@@ -270,7 +296,7 @@ public class InventoryController {
     /**
      * Delete product from server
      */
-    private void deleteProduct(Integer id) {
+    private void deleteProduct(Long id) {
         if (id == null || id <= 0) {
             logger.error("Invalid product ID for deletion: " + id);
             showError("Invalid ID", "Product ID is invalid");
@@ -344,4 +370,5 @@ public class InventoryController {
         alert.showAndWait();
     }
 }
+
 

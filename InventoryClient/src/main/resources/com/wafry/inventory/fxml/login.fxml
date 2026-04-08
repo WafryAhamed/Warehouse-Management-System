@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.wafry.inventory.controller.LoginController"
+            style="-fx-background-color: #F5F6F8;">
+
+    <center>
+        <StackPane>
+            <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-border-radius: 16; -fx-background-radius: 16;">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <!-- Title -->
+                <VBox alignment="CENTER" spacing="5">
+                    <Label text="Inventory Management System" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #1A1A1A;"/>
+                    <Label text="Inventory & E-Commerce Management" style="-fx-font-size: 14; -fx-text-fill: #6B7280;"/>
+                    <Separator style="-fx-padding: 10 0 0 0;"/>
+                </VBox>
+
+                <!-- Username Field -->
+                <VBox spacing="8">
+                    <Label text="Username" style="-fx-font-size: 12; -fx-text-fill: #1A1A1A; -fx-font-weight: bold;"/>
+                    <TextField fx:id="usernameField"
+                               promptText="Enter your username"
+                               style="-fx-padding: 12; -fx-font-size: 14; -fx-border-radius: 8; -fx-border-width: 1; -fx-border-color: #E5E7EB;"/>
+                </VBox>
+
+                <!-- Password Field -->
+                <VBox spacing="8">
+                    <Label text="Password" style="-fx-font-size: 12; -fx-text-fill: #1A1A1A; -fx-font-weight: bold;"/>
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Enter your password"
+                                   style="-fx-padding: 12; -fx-font-size: 14; -fx-border-radius: 8; -fx-border-width: 1; -fx-border-color: #E5E7EB;"/>
+                </VBox>
+
+                <!-- Login Button -->
+                <Button text="LOGIN"
+                        onAction="#handleLogin"
+                        style="-fx-padding: 12 30; -fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #FF4D1A; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand;"
+                        prefWidth="Infinity"/>
+
+                <!-- Demo Credentials -->
+                <VBox alignment="CENTER" spacing="10" style="-fx-border-color: #E5E7EB; -fx-border-width: 1; -fx-border-radius: 8; -fx-padding: 15;">
+                    <Label text="Demo Credentials" style="-fx-font-size: 11; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <Label text="Username: admin | Password: password" style="-fx-font-size: 11; -fx-text-fill: #6B7280;"/>
+                    <Button text="Use Demo Credentials"
+                            onAction="#handleDemoLogin"
+                            style="-fx-padding: 8 15; -fx-font-size: 11; -fx-text-fill: #FF4D1A; -fx-background-color: #FFF1E6; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"
+                            prefWidth="Infinity"/>
+                </VBox>
+            </VBox>
+            <Insets top="0" right="200" bottom="0" left="200"/>
+        </StackPane>
+    </center>
+</BorderPane>
+

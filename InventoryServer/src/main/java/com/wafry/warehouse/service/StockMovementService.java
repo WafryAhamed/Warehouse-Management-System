@@ -22,7 +22,7 @@ public class StockMovementService {
         return stockMovementRepository.findAll();
     }
 
-    public Optional<StockMovement> getMovement(Integer id) {
+    public Optional<StockMovement> getMovement(Long id) {
         return stockMovementRepository.findById(id);
     }
 }

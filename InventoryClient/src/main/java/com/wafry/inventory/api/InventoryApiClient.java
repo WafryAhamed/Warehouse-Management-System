@@ -68,7 +68,7 @@ public class InventoryApiClient {
      * @return The product
      * @throws ApiException If API call fails
      */
-    public Product getProductById(Integer id) throws ApiException {
+    public Product getProductById(Long id) throws ApiException {
         try {
             String url = ApplicationConfig.getApiEndpoint("/products/" + id);
             logger.info("Fetching product: " + id);
@@ -139,7 +139,7 @@ public class InventoryApiClient {
      * @return The updated product
      * @throws ApiException If API call fails
      */
-    public Product updateProduct(Integer id, Product product) throws ApiException {
+    public Product updateProduct(Long id, Product product) throws ApiException {
         try {
             String url = ApplicationConfig.getApiEndpoint("/products/" + id);
             logger.info("Updating product: " + id);
@@ -176,7 +176,7 @@ public class InventoryApiClient {
      * @param id The product ID
      * @throws ApiException If API call fails
      */
-    public void deleteProduct(Integer id) throws ApiException {
+    public void deleteProduct(Long id) throws ApiException {
         try {
             String url = ApplicationConfig.getApiEndpoint("/products/" + id);
             logger.info("Deleting product: " + id);

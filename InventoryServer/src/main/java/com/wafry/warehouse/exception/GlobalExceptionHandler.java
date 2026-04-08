@@ -1,117 +1,108 @@
 package com.wafry.warehouse.exception;
 
-import com.wafry.warehouse.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import java.time.LocalDateTime;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message(ex.getMessage())
-                .errorCode("NOT_FOUND")
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponseDTO> handleValidation(ValidationException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
                 .message(ex.getMessage())
-                .errorCode("VALIDATION_ERROR")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
+                .path(request.getDescription(false).replace("uri=", ""))
                 .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUnauthorized(UnauthorizedException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message(ex.getMessage())
-                .errorCode("UNAUTHORIZED")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ErrorResponseDTO> handleForbidden(ForbiddenException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message(ex.getMessage())
-                .errorCode("FORBIDDEN")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDuplicate(DuplicateResourceException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message(ex.getMessage())
-                .errorCode("CONFLICT")
+    public ResponseEntity<ErrorResponse> handleDuplicateResourceException(
+            DuplicateResourceException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
+                .status(HttpStatus.CONFLICT.value())
+                .error("Conflict")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
                 .build();
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidInputException(
+            InvalidInputException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(
+            MethodArgumentNotValidException ex, WebRequest request) {
+        Map<String, Object> errors = new HashMap<>();
+        Map<String, String> fieldErrors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+
+        errors.put("timestamp", LocalDateTime.now());
+        errors.put("status", HttpStatus.BAD_REQUEST.value());
+        errors.put("error", "Validation Failed");
+        errors.put("fieldErrors", fieldErrors);
+        errors.put("path", request.getDescription(false).replace("uri=", ""));
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("Forbidden")
+                .message("You do not have permission to access this resource")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGlobalException(Exception ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex, WebRequest request) {
+        log.error("Unexpected error occurred", ex);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("Internal Server Error")
                 .message("An unexpected error occurred")
-                .errorCode("INTERNAL_ERROR")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
+                .path(request.getDescription(false).replace("uri=", ""))
                 .build();
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message("Data integrity error: Duplicate or invalid data")
-                .errorCode("DATA_INTEGRITY_ERROR")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDataAccessException(DataAccessException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message("Database access error: Unable to access database")
-                .errorCode("DATABASE_ERROR")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ErrorResponseDTO> handleSQLException(SQLException ex, WebRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .message("Database error: SQL execution failed")
-                .errorCode("SQL_ERROR")
-                .timestamp(LocalDateTime.now())
-                .path(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
 

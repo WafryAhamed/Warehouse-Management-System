@@ -27,7 +27,7 @@ public class ApplicationConfig {
     // API Configuration
     public static final String API_BASE_URL = System.getenv("INVENTORY_API_URL") != null
             ? System.getenv("INVENTORY_API_URL")
-            : "http://localhost:8080/api";
+            : "http://localhost:8080/api/v1";
     public static final int API_TIMEOUT_MS = 5000;
     public static final String API_CONTENT_TYPE = "application/json";
 

@@ -2,42 +2,42 @@ package com.wafry.inventory.model;
 
 import java.time.LocalDateTime;
 
-/**
- * Supplier - Entity class representing a supplier
- *
- * @author Wafry Team
- */
 public class Supplier {
-    private Integer id;
-    private String name;
+    private Long id;
+    private String supplierName;
     private String contactPerson;
     private String email;
     private String phone;
     private String address;
     private String city;
-    private String country;
-    private String zipCode;
-    private String status;
-    private Double creditLimit;
+    private String state;
+    private String postalCode;
     private String paymentTerms;
+    private Boolean isActive;
     private LocalDateTime createdAt;
 
-    // Constructors
     public Supplier() {}
 
-    public Supplier(String name, String email, String phone) {
-        this.name = name;
+    public Supplier(Long id, String supplierName, String contactPerson, String email, String phone, String address, String city, String state, String postalCode, String paymentTerms, Boolean isActive, LocalDateTime createdAt) {
+        this.id = id;
+        this.supplierName = supplierName;
+        this.contactPerson = contactPerson;
         this.email = email;
         this.phone = phone;
-        this.status = "ACTIVE";
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.postalCode = postalCode;
+        this.paymentTerms = paymentTerms;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
     }
 
-    // Getters & Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getSupplierName() { return supplierName; }
+    public void setSupplierName(String supplierName) { this.supplierName = supplierName; }
 
     public String getContactPerson() { return contactPerson; }
     public void setContactPerson(String contactPerson) { this.contactPerson = contactPerson; }
@@ -54,40 +54,19 @@ public class Supplier {
     public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
 
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 
-    public String getZipCode() { return zipCode; }
-    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public Double getCreditLimit() { return creditLimit; }
-    public void setCreditLimit(Double creditLimit) { this.creditLimit = creditLimit; }
+    public String getPostalCode() { return postalCode; }
+    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
 
     public String getPaymentTerms() { return paymentTerms; }
     public void setPaymentTerms(String paymentTerms) { this.paymentTerms = paymentTerms; }
 
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Supplier supplier = (Supplier) o;
-        return id != null && id.equals(supplier.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }
 

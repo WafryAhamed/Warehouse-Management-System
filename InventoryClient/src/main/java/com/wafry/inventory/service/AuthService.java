@@ -45,7 +45,7 @@ public class AuthService {
         // Mock authentication - replace with actual backend call
         if ("admin".equals(username) && "password".equals(password)) {
             currentUser = new User(username, "admin@inventory.com", "Administrator", "ADMIN");
-            currentUser.setId(1);
+            currentUser.setId(1L);
 
             // Generate and store token
             String token = generateToken(currentUser);
@@ -58,7 +58,7 @@ public class AuthService {
         // Test credentials
         if ("user".equals(username) && "user".equals(password)) {
             currentUser = new User(username, "user@inventory.com", "Standard User", "STAFF");
-            currentUser.setId(2);
+            currentUser.setId(2L);
 
             // Generate and store token
             String token = generateToken(currentUser);
